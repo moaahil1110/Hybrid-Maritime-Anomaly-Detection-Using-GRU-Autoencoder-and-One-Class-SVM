@@ -15,7 +15,7 @@
 
 ## 📦 Dataset
 
-This project uses **Baltic Sea AIS trajectory data (2017–2019)** sourced from [IEEE DataPort](http://ieee-dataport.org/2099).
+This project uses **Baltic Sea AIS trajectory data (2017–2019)** sourced from [GitHub – Marine Traffic Modelling](https://github.com/hakola/marine-traffic-modelling?tab=readme-ov-file).
 
 ---
 
