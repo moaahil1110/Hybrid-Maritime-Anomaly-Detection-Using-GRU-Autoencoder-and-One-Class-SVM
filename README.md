@@ -105,7 +105,7 @@ SSRN
 
 ## 🏆 Conference Certificate
 
-This paper was presented at the **International Conference on Innovative Computing and Communication (ICICC)**.
+This paper was presented at the **7th Doctoral Symposium on Computational Intelligence (DoSCI-2026)**.
 
 ![Conference Certificate](Certificate.png)
 
