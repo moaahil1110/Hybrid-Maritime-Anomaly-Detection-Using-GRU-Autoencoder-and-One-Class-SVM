@@ -103,6 +103,15 @@ SSRN
 
 ---
 
+## 🏆 Conference Certificate
+
+This paper was presented at the **International Conference on Innovative Computing and Communication (ICICC)**.
+
+![Conference Certificate](Certificate.png)
+
+---
+
+
 ## 🙏 Acknowledgment
 
 This repository is based on published research on maritime anomaly detection using AIS trajectory data, with a focus on building a practical and efficient anomaly detection pipeline.
