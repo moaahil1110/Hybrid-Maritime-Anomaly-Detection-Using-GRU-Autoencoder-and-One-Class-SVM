@@ -43,6 +43,21 @@ This makes the approach practical for anomaly detection in **low-label environme
 
 ---
 
+## ⚙️ Environment Setup
+
+Requires Python 3.10+ (tested on Python 3.13 with TensorFlow 2.21).
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+The notebooks were written for Google Colab (`google.colab.drive` mounts and `/content/drive/...` paths); when running locally, skip the Drive-mount cells and point the paths at your local data and model directories. `15.app.py` likewise loads models from a hard-coded `MODEL_PATH_DIR` that needs to be updated.
+
+---
+
 ## 🛠️ Method
 
 ### 1. Data Preparation
