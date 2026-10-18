@@ -1,4 +1,5 @@
 # live_client.py - Enhanced AIS Data Streaming with Hybrid Scoring Integration
+import os
 import websocket
 import json
 import time
@@ -17,7 +18,7 @@ logging.getLogger('engineio').setLevel(logging.ERROR)
 logging.getLogger('werkzeug').setLevel(logging.ERROR)
 
 # --- Configuration ---
-AISSTREAM_API_KEY = "f21c889c57c775dfecd998de7b0d5ee7ef823edb"
+AISSTREAM_API_KEY = os.environ["AISSTREAM_API_KEY"]  # set in your shell; never commit the key
 MODEL_API_URL = "http://127.0.0.1:5002/predict"
 HEALTH_CHECK_URL = "http://127.0.0.1:5002/health"
 SEQ_LEN = 10

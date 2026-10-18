@@ -56,6 +56,12 @@ pip install -r requirements.txt
 
 The notebooks were written for Google Colab (`google.colab.drive` mounts and `/content/drive/...` paths); when running locally, skip the Drive-mount cells and point the paths at your local data and model directories. `15.app.py` likewise loads models from a hard-coded `MODEL_PATH_DIR` that needs to be updated.
 
+`16.live_client.py` reads your [aisstream.io](https://aisstream.io) key from the environment:
+
+```bash
+export AISSTREAM_API_KEY="your-key-here"
+```
+
 ---
 
 ## 🛠️ Method
