@@ -1,0 +1,30 @@
+# Core ML / data
+numpy
+pandas
+scipy
+scikit-learn
+joblib
+tensorflow
+tqdm
+
+# Plotting
+matplotlib
+seaborn
+
+# Geospatial
+shapely
+geopandas
+haversine
+
+# API server (15.app.py) and live AIS client (16.live_client.py)
+flask
+flask-socketio
+flask-cors
+requests
+websocket-client
+websockets
+schedule
+
+# Running the notebooks locally
+jupyter
+ipykernel
