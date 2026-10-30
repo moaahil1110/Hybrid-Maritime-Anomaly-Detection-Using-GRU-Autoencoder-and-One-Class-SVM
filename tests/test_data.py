@@ -8,27 +8,12 @@ from maritime_ad.data import (
     inject_anomalies,
     load_ais,
     make_windows,
+    sample_vessels,
     scale_windows,
     split_by_vessel,
     vessel_bounds,
 )
-
-
-def make_tracks(points_per_vessel, seed=0):
-    """Time-sorted tracks; latitude encodes the vessel so windows can be traced back."""
-    rng = np.random.default_rng(seed)
-    frames = []
-    for vessel, n in enumerate(points_per_vessel):
-        frames.append(pd.DataFrame({
-            "mmsi": 100 + vessel,
-            "timestamp": pd.date_range("2018-01-01", periods=n, freq="5min"),
-            "latitude": float(vessel),
-            "longitude": rng.uniform(10, 20, n),
-            "speed": rng.uniform(5, 15, n),
-            "course": rng.uniform(0, 360, n),
-            "heading": rng.uniform(0, 360, n),
-        }))
-    return pd.concat(frames, ignore_index=True)
+from conftest import make_tracks
 
 
 def test_windows_never_cross_vessels():
@@ -80,6 +65,15 @@ def test_load_ais_replaces_unavailable_heading(tmp_path):
 
     loaded = load_ais(csv, clip_quantiles=None)
     assert loaded.loc[1, "heading"] == pytest.approx(loaded.loc[1, "course"])
+
+
+def test_sample_vessels_keeps_whole_tracks():
+    df = make_tracks([20] * 50)
+    sampled = sample_vessels(df, 0.2)
+    assert sampled["mmsi"].nunique() == 10
+    assert (sampled.groupby("mmsi").size() == 20).all()
+    assert sampled.equals(sample_vessels(df, 0.2)), "sampling must be repeatable"
+    assert sample_vessels(df, 1.0) is df
 
 
 def test_split_by_vessel_has_no_overlap():

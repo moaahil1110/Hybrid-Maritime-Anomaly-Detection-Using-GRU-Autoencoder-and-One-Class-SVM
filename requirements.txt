@@ -1,4 +1,4 @@
-# Training notebooks (notebooks/) and shared code (maritime_ad/)
+# Training scripts (scripts/) and shared code (maritime_ad/)
 numpy
 pandas
 scikit-learn
@@ -6,8 +6,7 @@ joblib
 tensorflow
 matplotlib
 seaborn
-jupyter
-ipykernel
+ipykernel   # only needed to run the scripts cell by cell in an editor
 
 # API (app/api.py)
 flask

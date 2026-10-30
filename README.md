@@ -59,15 +59,15 @@ pip install -r requirements.txt
 ## 🗂️ Repository Layout
 
 ```
-notebooks/
-  01_train_autoencoder.ipynb   # trains the Bidirectional GRU autoencoder and the scaler
-  02_train_detector.ipynb      # trains the One-Class SVM on latent vectors and evaluates it
+scripts/
+  train_autoencoder.py         # trains the Bidirectional GRU autoencoder and the scaler
+  train_detector.py            # trains the One-Class SVM on latent vectors and evaluates it
 maritime_ad/                   # shared code: paths, data loading, windowing, anomaly injection
 app/
   api.py                       # Flask API: hybrid ML + rule scoring (port 5002)
   live_client.py               # streams live AIS from aisstream.io to the API and the map (port 5003)
   demo.html                    # live map; open it in a browser
-tests/                         # unit tests for maritime_ad
+tests/                         # unit tests, plus an end-to-end run of both scripts
 data/  models/  results/       # created locally, not committed
 ```
 
@@ -75,19 +75,26 @@ data/  models/  results/       # created locally, not committed
 
 ## 🔁 Reproducing the Model
 
-1. Download `training_set.csv` from the dataset above and place it at `data/training_set.csv`.
-2. Run `notebooks/01_train_autoencoder.ipynb`, then `notebooks/02_train_detector.ipynb`.
+1. Download `data/datasets.zip` from the dataset repository above (about 290 MB) and extract `datasets/training_set.csv` to `data/training_set.csv`.
+2. Train the autoencoder, then the detector:
 
-The notebooks write the trained files to `models/latest-model/`, which is where `app/api.py` reads them:
+```bash
+python scripts/train_autoencoder.py      # add --sample-vessels 0.2 --epochs 5 for a quick trial run
+python scripts/train_detector.py
+```
+
+The scripts write the trained files to `models/latest-model/`, which is where `app/api.py` reads them:
 
 | File | Written by | Contents |
 |---|---|---|
-| `final_data_scaler.pkl` | 01 | StandardScaler for the 5 input features |
-| `final_autoencoder_model.keras` | 01 | Full autoencoder |
-| `gru_encoder.keras` | 01 | Encoder half: 10 × 5 window → 128-d latent vector |
-| `final_anomaly_detector.pkl` | 02 | One-Class SVM, `nu` chosen on the validation vessels |
+| `final_data_scaler.pkl` | `train_autoencoder.py` | StandardScaler for the 5 input features |
+| `final_autoencoder_model.keras` | `train_autoencoder.py` | Full autoencoder |
+| `gru_encoder.keras` | `train_autoencoder.py` | Encoder half: 10 × 5 window → 128-d latent vector |
+| `final_anomaly_detector.pkl` | `train_detector.py` | One-Class SVM, `nu` chosen on the validation vessels |
 
-Notebook 02 also writes `results/detector_metrics.json` and its plots. Model hyperparameters are set at the top of each notebook; window length, features and paths live in `maritime_ad/config.py`. To use other locations, set `MARITIME_DATA_CSV`, `MARITIME_MODEL_DIR` or `MARITIME_RESULTS_DIR`.
+`train_detector.py` also writes `results/detector_metrics.json` and its plots. Run either script with `--help` to see its options. Other hyperparameters are set near the top of each script, and window length, features and paths live in `maritime_ad/config.py`. To use other locations, set `MARITIME_DATA_CSV`, `MARITIME_MODEL_DIR` or `MARITIME_RESULTS_DIR`.
+
+The scripts are split into sections with `# %%` markers, so editors such as VS Code can also run them section by section with plots shown inline.
 
 Run the tests with `pytest`.
 
@@ -143,7 +150,7 @@ The model was tested against the following synthetic anomaly patterns:
 
 The hybrid GRU-AE + One-Class SVM model effectively detects anomalous trajectories while remaining computationally efficient.
 
-> **Note:** these figures come from the original version of the detector notebook. The pipeline has since been corrected: windows now follow each vessel's time-ordered track, anomalies are injected per vessel, and `nu` is chosen on validation data rather than the test set. Re-running the notebooks produces updated figures in `results/detector_metrics.json`.
+> **Note:** these figures come from the original version of the detector training code. The pipeline has since been corrected: windows now follow each vessel's time-ordered track, anomalies are injected per vessel, and `nu` is chosen on validation data rather than the test set. Re-running the training scripts produces updated figures in `results/detector_metrics.json`.
 
 ---
 

@@ -1,4 +1,4 @@
-"""Data preparation shared by both training notebooks.
+"""Data preparation shared by both training scripts.
 
 Every function here works on a DataFrame sorted by vessel (mmsi) and then by
 time, with a fresh RangeIndex, which is what load_ais returns. Under that
@@ -41,6 +41,16 @@ def load_ais(csv_path, clip_quantiles=(0.01, 0.99)):
             df[col] = df[col].clip(df[col].quantile(low), df[col].quantile(high))
 
     return df.sort_values(["mmsi", "timestamp"], kind="stable").reset_index(drop=True)
+
+
+def sample_vessels(df, fraction, seed=SEED):
+    """Keep a random fraction of vessels (all of their rows), for quicker runs."""
+    if fraction >= 1:
+        return df
+    vessels = df["mmsi"].unique()
+    rng = np.random.default_rng(seed)
+    keep = rng.choice(vessels, size=max(1, round(len(vessels) * fraction)), replace=False)
+    return df[df["mmsi"].isin(keep)].reset_index(drop=True)
 
 
 def split_by_vessel(df, val_size=0.2, test_size=0.2, seed=SEED):

@@ -23,7 +23,7 @@ RULE_WEIGHT = 0.3    # 30% Rule-based contribution
 HYBRID_THRESHOLD = 0.30  # Anomaly threshold for hybrid score
 
 # --- Model Configuration ---
-# Produced by notebooks/01_train_autoencoder.ipynb and notebooks/02_train_detector.ipynb
+# Produced by scripts/train_autoencoder.py and scripts/train_detector.py
 MODEL_PATH_DIR = os.environ.get(
     'MARITIME_MODEL_DIR',
     os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'models', 'latest-model'),
@@ -46,7 +46,7 @@ try:
     scaler = joblib.load(os.path.join(MODEL_PATH_DIR, 'final_data_scaler.pkl'))
     logging.info("✅ All models loaded successfully.")
 except Exception as e:
-    logging.error(f"FATAL: Could not load models from {MODEL_PATH_DIR}. Run the notebooks in notebooks/ "
+    logging.error(f"FATAL: Could not load models from {MODEL_PATH_DIR}. Run the scripts in scripts/ "
                   f"or set MARITIME_MODEL_DIR. Error: {e}")
     exit(1)
 
