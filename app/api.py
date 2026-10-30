@@ -1,5 +1,6 @@
-# app.py - Enhanced Maritime Anomaly Detection API with 70/30 Hybrid Scoring
+# api.py - Enhanced Maritime Anomaly Detection API with 70/30 Hybrid Scoring
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # must be set before TensorFlow is imported
 import time
 import traceback
 import logging
@@ -10,11 +11,9 @@ import tensorflow as tf
 from flask import Flask, request, jsonify
 from shapely.geometry import Point, Polygon
 from haversine import haversine, Unit
-from sklearn.preprocessing import MinMaxScaler
 
 # --- Bootstrap ---
 app = Flask(__name__)
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 tf.get_logger().setLevel('ERROR')
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - API - %(levelname)s - %(message)s')
 
@@ -24,7 +23,11 @@ RULE_WEIGHT = 0.3    # 30% Rule-based contribution
 HYBRID_THRESHOLD = 0.30  # Anomaly threshold for hybrid score
 
 # --- Model Configuration ---
-MODEL_PATH_DIR = '/Users/hafizmohammedaahil/Documents/C3I-Code/C3I-Internship-Work/Programs/MaritimeAnomalyDetection/models/latest-model/'
+# Produced by notebooks/01_train_autoencoder.ipynb and notebooks/02_train_detector.ipynb
+MODEL_PATH_DIR = os.environ.get(
+    'MARITIME_MODEL_DIR',
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'models', 'latest-model'),
+)
 SEQ_LEN = 10
 FEATURES = ['latitude', 'longitude', 'speed', 'course', 'heading']
 
@@ -43,15 +46,14 @@ try:
     scaler = joblib.load(os.path.join(MODEL_PATH_DIR, 'final_data_scaler.pkl'))
     logging.info("✅ All models loaded successfully.")
 except Exception as e:
-    logging.error(f"FATAL: Could not load models. Error: {e}")
+    logging.error(f"FATAL: Could not load models from {MODEL_PATH_DIR}. Run the notebooks in notebooks/ "
+                  f"or set MARITIME_MODEL_DIR. Error: {e}")
     exit(1)
 
 # --- Scoring Normalization ---
-score_normalizer = MinMaxScaler((0, 1)).fit(np.logspace(-4, 2, 50).reshape(-1, 1))
-
 def normalize_ml_score(ml_decision):
     """Convert SVM decision function output to [0,1] score"""
-    # SVM outputs negative for normal, positive for anomaly
+    # OneClassSVM decision_function is positive for normal (inside the boundary), negative for anomaly
     # Convert to 0-1 scale where higher = more anomalous
     normalized = max(0, min(1, (0.5 - ml_decision) / 2))
     return normalized

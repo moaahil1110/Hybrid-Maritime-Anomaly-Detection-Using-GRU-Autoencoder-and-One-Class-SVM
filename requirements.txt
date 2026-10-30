@@ -1,30 +1,24 @@
-# Core ML / data
+# Training notebooks (notebooks/) and shared code (maritime_ad/)
 numpy
 pandas
-scipy
 scikit-learn
 joblib
 tensorflow
-tqdm
-
-# Plotting
 matplotlib
 seaborn
-
-# Geospatial
-shapely
-geopandas
-haversine
-
-# API server (15.app.py) and live AIS client (16.live_client.py)
-flask
-flask-socketio
-flask-cors
-requests
-websocket-client
-websockets
-schedule
-
-# Running the notebooks locally
 jupyter
 ipykernel
+
+# API (app/api.py)
+flask
+shapely
+haversine
+
+# Live AIS client (app/live_client.py)
+requests
+websocket-client
+flask-socketio
+flask-cors
+
+# Tests
+pytest
